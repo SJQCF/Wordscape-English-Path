@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjqcf.mapper.CodeMapper">
+
+    <insert id="insertCode">
+        insert into verification_codes(email,code,expires_at) values(#{ToEmail},#{code},#{now})
+    </insert>
+
+    <select id="getCode" resultType="java.lang.String">
+        select code from verification_codes where email = #{ToEmail} and expires_at &lt; #{now} order by expires_at desc limit 1
+    </select>
+
+    <delete id="deleteCode">
+        delete from verification_codes where email = #{ToEmail}
+    </delete>
+</mapper>

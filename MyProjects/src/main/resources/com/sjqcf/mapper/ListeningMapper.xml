@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjqcf.mapper.ListeningMapper">
+    <insert id="favoriteAudio">
+        insert into user_listening_favorites (audio_id,user_id) values (#{audioId},#{userId})
+    </insert>
+    <delete id="cancelFavoriteAudio">
+        delete from user_listening_favorites where audio_id=#{audioId} and user_id=#{userId}
+    </delete>
+
+    <select id="getListeningList" resultType="com.sjqcf.pojo.Audio">
+        select id,title,duration,category from listening_audio
+    </select>
+
+    <select id="getListeningListByType" resultType="com.sjqcf.pojo.Audio">
+        select id,title,duration,category from listening_audio where category=#{type}
+    </select>
+
+    <select id="getById" resultType="com.sjqcf.pojo.Audio">
+        select id,audio_url,title,duration,category,transcript from listening_audio where id=#{id}
+    </select>
+
+    <select id="getFavoriteAudios" resultType="com.sjqcf.pojo.Audio">
+        select a.id,title,duration,category from listening_audio a
+        join user_listening_favorites f on a.id=f.audio_id
+        where f.user_id=#{userId}
+    </select>
+
+    <select id="checkFavoriteAudio" resultType="java.lang.Integer">
+        select count(*) from user_listening_favorites where audio_id=#{audioId} and user_id=#{userId}
+    </select>
+</mapper>

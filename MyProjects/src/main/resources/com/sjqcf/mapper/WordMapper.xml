@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjqcf.mapper.WordMapper">
+    <insert id="star">
+        insert into user_favorites(user_id,word_id) values(#{userId},#{wordId})
+    </insert>
+
+    <insert id="completeWord">
+        insert into user_learned_words(user_id,word_id,type) values(#{userId},#{wordId},#{type})
+    </insert>
+
+    <insert id="completeBusinessWord">
+        insert into user_learned_business_words(user_id,word_id,type) values(#{userId},#{wordId},#{type})
+    </insert>
+
+    <insert id="completeAbroadWord">
+        insert into user_learned_abroad_words(user_id,word_id,type) values(#{userId},#{wordId},#{type})
+    </insert>
+
+    <update id="updateCompleteBusinessWord">
+        UPDATE user_learned_business_words
+        SET review_count = review_count + 1
+        WHERE user_id = #{userId} AND word_id = #{wordId}
+    </update>
+
+    <update id="updateCompleteAbroadWord">
+        UPDATE user_learned_abroad_words
+        SET review_count = review_count + 1
+        WHERE user_id = #{userId} AND word_id = #{wordId}
+    </update>
+
+    <insert id="reviewCompleteWord">
+        INSERT INTO user_learned_words (user_id, word_id, type, review_count)
+        VALUES (#{userId}, #{wordId}, #{type}, 1)
+    </insert>
+
+    <update id="updateReviewCount">
+        UPDATE user_learned_words
+        SET review_count = review_count + 1
+        WHERE user_id = #{userId} AND word_id = #{wordId} AND type = #{type}
+    </update>
+
+    <delete id="cancelStar">
+        delete from user_favorites where user_id = #{userId} and word_id = #{wordId}
+    </delete>
+
+    <select id="findAll" resultType="com.sjqcf.pojo.Word">
+        select * from words
+    </select>
+
+    <select id="findByEn" resultType="com.sjqcf.pojo.Word">
+        select * from words where word like concat('%',#{english},'%')
+    </select>
+
+    <select id="findByCn" resultType="com.sjqcf.pojo.Word">
+        select * from words where definition like concat('%',#{chinese},'%')
+    </select>
+
+    <select id="findStarByUserId" resultType="com.sjqcf.pojo.Word">
+        select w.* from user_favorites f left join words w on f.word_id = w.id where f.user_id = #{id} order by w.id
+    </select>
+
+    <select id="findStarNumByUserId" resultType="java.lang.Integer">
+        select count(*) from user_favorites where user_id = #{id}
+    </select>
+
+    <select id="findById" resultType="com.sjqcf.pojo.Word">
+        select * from words where id = #{id}
+    </select>
+
+    <select id="findUnstudiedWords" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM words w
+        LEFT JOIN user_learned_words ulw ON w.id = ulw.word_id AND ulw.user_id = #{userId}
+        WHERE w.type &lt;= #{userType}
+        AND ulw.word_id IS NULL
+        ORDER BY w.id
+        LIMIT #{num}
+    </select>
+
+    <select id="findUnstudiedBusinessWords" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM business_words w
+        LEFT JOIN user_learned_business_words ulbw ON w.id = ulbw.word_id AND ulbw.user_id = #{userId}
+        WHERE w.type = #{userType}
+        AND ulbw.word_id IS NULL
+        ORDER BY w.id
+        LIMIT #{num}
+    </select>
+
+    <select id="findUnstudiedAbroadWords" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM abroad_words w
+        LEFT JOIN user_learned_abroad_words ulbw ON w.id = ulbw.word_id AND ulbw.user_id = #{userId}
+        WHERE w.type = #{userType}
+        AND ulbw.word_id IS NULL
+        ORDER BY w.id
+        LIMIT #{num}
+    </select>
+
+    <select id="getTodayNewWordsCount" resultType="java.lang.Integer">
+        SELECT word_count
+        FROM user_daily_word_count
+        WHERE study_date = #{now} AND user_id = #{userId}
+    </select>
+
+    <select id="getTodayReviewWordsCount" resultType="java.lang.Integer">
+        SELECT review_count
+        FROM user_daily_word_count
+        WHERE study_date = #{now} AND user_id = #{userId}
+    </select>
+
+    <select id="getStudiedNumByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_learned_words
+        WHERE user_id = #{userId} AND type = #{type}
+    </select>
+
+    <select id="checkStar" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_favorites
+        WHERE user_id = #{userId} AND word_id = #{wordId}
+    </select>
+
+    <select id="findStudiedBusinessWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_business_words ulbw
+        LEFT JOIN words w ON ulbw.word_id = w.id
+        WHERE ulbw.user_id = #{userId}
+        ORDER BY w.id
+    </select>
+
+    <select id="findStudiedAbroadWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_abroad_words ulbw
+        LEFT JOIN words w ON ulbw.word_id = w.id
+        WHERE ulbw.user_id = #{userId}
+        ORDER BY w.id
+    </select>
+
+    <select id="findStudiedSixWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_words ulw
+                 LEFT JOIN words w ON ulw.word_id = w.id
+        WHERE ulw.user_id = #{userId} AND ulw.type &lt;= #{type}
+        ORDER BY w.id
+    </select>
+
+    <select id="findStudiedFourWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_words ulw
+        LEFT JOIN words w ON ulw.word_id = w.id
+        WHERE ulw.user_id = #{userId} AND ulw.type &lt;= #{type}
+        ORDER BY w.id
+    </select>
+
+    <select id="findStudiedWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_words ulw
+        LEFT JOIN words w ON ulw.word_id = w.id
+        WHERE ulw.user_id = #{userId} AND ulw.type = #{type}
+        ORDER BY w.id
+    </select>
+
+    <select id="findReviewBusinessWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_business_words ulbw
+                 LEFT JOIN business_words w ON ulbw.word_id = w.id
+        WHERE ulbw.user_id = #{userId} AND ulbw.review_count = 0
+        ORDER BY w.id
+        LIMIT #{num}
+    </select>
+
+    <select id="findReviewAbroadWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_abroad_words ulbw
+                 LEFT JOIN abroad_words w ON ulbw.word_id = w.id
+        WHERE ulbw.user_id = #{userId} AND ulbw.review_count = 0
+        ORDER BY w.id
+        LIMIT #{num}
+    </select>
+
+    <select id="findReviewSixWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_words ulw
+                 LEFT JOIN words w ON ulw.word_id = w.id
+        WHERE ulw.user_id = #{userId} AND ulw.type &lt;= #{type} AND ulw.review_count = 0
+        ORDER BY w.id
+        LIMIT #{num}
+    </select>
+
+    <select id="findReviewFourWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_words ulw
+                 LEFT JOIN words w ON ulw.word_id = w.id
+        WHERE ulw.user_id = #{userId} AND ulw.type &lt;= #{type} AND ulw.review_count = 0
+        ORDER BY w.id
+        LIMIT #{num}
+    </select>
+
+    <select id="findReviewWordsByUserId" resultType="com.sjqcf.pojo.Word">
+        SELECT w.*
+        FROM user_learned_words ulw
+                 LEFT JOIN words w ON ulw.word_id = w.id
+        WHERE ulw.user_id = #{userId} AND ulw.type = #{type} AND ulw.review_count = 0
+        ORDER BY w.id
+        LIMIT #{num}
+    </select>
+
+    <select id="findReviewNumByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_learned_words
+        WHERE user_id = #{userId} AND type = #{type} AND review_count = 0
+    </select>
+    <select id="findReviewBusinessWordsNumByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_learned_business_words
+        WHERE user_id = #{userId} AND review_count = 0
+    </select>
+
+    <select id="findReviewAbroadWordsNumByUserId" resultType="java.lang.Integer">
+            SELECT COUNT(*)
+            FROM user_learned_abroad_words
+            WHERE user_id = #{userId} AND review_count = 0
+    </select>
+
+    <select id="findReviewSixWordsNumByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_learned_words
+        WHERE user_id = #{userId} AND type &lt;= #{type} AND review_count = 0
+    </select>
+
+    <select id="findReviewFourWordsNumByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_learned_words
+        WHERE user_id = #{userId} AND type &lt;= #{type} AND review_count = 0
+    </select>
+
+    <select id="findReviewWordsNumByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM user_learned_words
+        WHERE user_id = #{userId} AND type = #{type} AND review_count = 0
+    </select>
+
+    <select id="find" resultType="com.sjqcf.pojo.Word">
+        SELECT DISTINCT word, phonetic, definition, example, source_table
+        FROM (
+                 SELECT CONVERT(word USING utf8mb4) as word,
+                        CONVERT(phonetic USING utf8mb4) as phonetic,
+                        CONVERT(definition USING utf8mb4) as definition,
+                        CONVERT(example USING utf8mb4) as example,
+                        'words' as source_table
+                 FROM words
+                 WHERE word LIKE CONCAT('%', #{word}, '%') OR phonetic LIKE CONCAT('%', #{word}, '%')
+
+                 UNION
+
+                 SELECT CONVERT(word USING utf8mb4) as word,
+                        CONVERT(phonetic USING utf8mb4) as phonetic,
+                        CONVERT(definition USING utf8mb4) as definition,
+                        CONVERT(example USING utf8mb4) as example,
+                        'abroad_words' as source_table
+                 FROM abroad_words
+                 WHERE word LIKE CONCAT('%', #{word}, '%') OR phonetic LIKE CONCAT('%', #{word}, '%')
+
+                 UNION
+
+                 SELECT CONVERT(word USING utf8mb4) as word,
+                        CONVERT(phonetic USING utf8mb4) as phonetic,
+                        CONVERT(definition USING utf8mb4) as definition,
+                        CONVERT(example USING utf8mb4) as example,
+                        'business_words' as source_table
+                 FROM business_words
+                 WHERE word LIKE CONCAT('%', #{word}, '%') OR phonetic LIKE CONCAT('%', #{word}, '%')
+             ) AS combined_results
+        ORDER BY word
+    </select>
+
+    <select id="findBusinessWordById" resultType="com.sjqcf.pojo.Word">
+        SELECT *
+        FROM business_words
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAbroadWordById" resultType="com.sjqcf.pojo.Word">
+        SELECT *
+        FROM abroad_words
+        WHERE id = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjqcf.mapper.UserMapper">
+    <update id="update">
+        update user set
+            <if test="username != null and username != ''">
+                username = #{username}
+            </if>
+            <if test="password != null and password != ''">
+                ,password = #{password}
+            </if>
+            <if test="image != null and image != ''">
+                ,image = #{image}
+            </if>
+            <if test="email != null and email != ''">
+                ,email = #{email}
+            </if>
+            <if test="type != null">
+                ,type = #{type}
+            </if>
+            <if test="lastStudyDay != null">
+                ,last_study_day = #{lastStudyDay}
+            </if>
+            <if test="studyDays != null">
+                ,study_days = #{studyDays}
+            </if>
+            <if test="totalStudyDays != null">
+                ,total_study_days = #{totalStudyDays}
+            </if>
+            <if test="darkMode != null">
+                ,dark_mode = #{darkMode}
+            </if>
+            where id = #{id}
+    </update>
+
+    <update id="updateUserType">
+        update user set type = #{typeChoice} where id = #{id}
+    </update>
+
+    <update id="updateName">
+        update user set username = #{name} where id = #{userId}
+    </update>
+
+    <update id="updateSignature">
+        update user set signature = #{signature} where id = #{userId}
+    </update>
+
+    <update id="updatePlanStudyNum">
+        update user_study_plan set study_plan_num = #{planNum} where user_id = #{userId}
+    </update>
+
+    <update id="updatePlanReviewNum">
+        update user_study_plan set review_plan_num = #{planNum} where user_id = #{userId}
+    </update>
+
+    <update id="updateReviewWordNum">
+        update user_daily_word_count set review_count = review_count + 1 where user_id = #{userId} AND study_date = #{now}
+    </update>
+
+    <update id="updateStudyWordNum">
+        update user_daily_word_count set word_count = word_count + 1 where user_id = #{userId} AND study_date = #{now}
+    </update>
+
+    <update id="updateAvatar">
+        update user set image = #{avatar} where id = #{userId}
+    </update>
+
+    <update id="updateIsNightMode">
+        update user set dark_mode = #{isNightMode} where id = #{userId}
+    </update>
+
+    <update id="updatePassword">
+        update user set password = #{password} where id = #{userId}
+    </update>
+
+    <update id="setStudyDays">
+        update user set study_days = #{studyDays} where id = #{userId}
+    </update>
+
+    <insert id="setStudyWordNum">
+        insert into user_daily_word_count(user_id,study_date,word_count,review_count) values(#{userId},#{now},1,0)
+    </insert>
+
+    <insert id="setReviewWordNum">
+        insert into user_daily_word_count(user_id,study_date,word_count,review_count) values(#{userId},#{now},0,1)
+    </insert>
+
+<!--    <select id="findByPhone" resultType="com.sjqcf.pojo.User">-->
+<!--        select * from user where phone = #{phone}-->
+<!--    </select>-->
+
+    <select id="findById" resultType="com.sjqcf.pojo.User">
+        select * from user where id = #{id}
+    </select>
+
+    <select id="getUserType" resultType="java.lang.Integer">
+        select type from user where id = #{id}
+    </select>
+
+    <select id="getTotalStudyDays" resultType="java.lang.Integer">
+        select total_study_days from user where id = #{id}
+    </select>
+
+    <select id="getStudayDays" resultType="java.lang.Integer">
+        select study_days from user where id = #{id}
+    </select>
+
+    <select id="getUserTypeByuserId" resultType="java.lang.Integer">
+        select type from user where id = #{userId}
+    </select>
+
+    <select id="getSignature" resultType="java.lang.String">
+        select signature from user where id = #{userId}
+    </select>
+
+    <select id="getNameByuserId" resultType="java.lang.String">
+        select username from user where id = #{userId}
+    </select>
+
+    <select id="getAvatar" resultType="java.lang.String">
+        select image from user where id = #{userId}
+    </select>
+
+    <select id="findPlanWordsByUserId" resultType="java.lang.Integer">
+        select study_plan_num from user_study_plan where user_id = #{userId}
+    </select>
+
+    <select id="findPlanReviewWordsByUserId" resultType="java.lang.Integer">
+        select review_plan_num from user_study_plan where user_id = #{userId}
+    </select>
+
+    <select id="findPlanByUser" resultType="java.lang.Boolean">
+        select case when study_plan_num >= 0 or review_plan_num >= 0 then true else false end from user_study_plan where user_id = #{userId}
+    </select>
+
+    <select id="isNightMode" resultType="java.lang.Boolean">
+        select dark_mode from user where id = #{userId}
+    </select>
+
+    <select id="findByEmail" resultType="com.sjqcf.pojo.User">
+        select * from user where email = #{email}
+    </select>
+    <select id="getPassword" resultType="java.lang.String">
+        select password from user where id = #{id}
+    </select>
+
+    <select id="getLastStudyDay" resultType="java.time.LocalDate">
+        select last_study_day from user where id = #{id}
+    </select>
+
+    <insert id="save">
+        insert into user(email
+        <if test="username != null and username != ''">
+            ,username
+        </if>
+        <if test="password != null and password != ''">
+            ,password
+        </if>) values(#{email}
+        <if test="username != null and username != ''">
+            ,#{username}
+        </if>
+        <if test="password != null and password != ''">
+            ,#{password}
+        </if>)
+    </insert>
+
+    <insert id="newPlan">
+        insert into user_study_plan(user_id,study_plan_num,review_plan_num) values(#{userId},10,10)
+    </insert>
+
+</mapper>

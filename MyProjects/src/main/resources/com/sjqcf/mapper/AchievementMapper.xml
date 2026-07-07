@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjqcf.mapper.AchievementMapper">
+    <insert id="insert">
+        insert into user_achievements (user_id, achievement_id, obtained_time)
+        values (#{userId}, #{achievementId}, #{time})
+    </insert>
+
+    <select id="getAchievementList" resultType="com.sjqcf.pojo.Achievement">
+        select * from achievements
+    </select>
+
+    <select id="getUserAchievement" resultType="java.lang.Integer">
+        select achievement_id from user_achievements where user_id = #{userId}
+    </select>
+
+    <select id="getUserAchievementTime" resultType="java.time.LocalDateTime">
+        select obtained_time from user_achievements where user_id = #{userId} and achievement_id = #{achievementId}
+    </select>
+
+    <select id="checkAchievement" resultType="java.lang.Integer">
+        select count(*) from user_achievements where user_id = #{userId} and achievement_id = #{achievementId}
+    </select>
+</mapper>

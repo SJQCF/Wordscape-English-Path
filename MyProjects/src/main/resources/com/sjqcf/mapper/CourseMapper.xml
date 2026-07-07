@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sjqcf.mapper.CourseMapper">
+
+    <insert id="starCourse">
+        insert into user_course_favorites(user_id, course_id) values(#{userId},#{courseId})
+    </insert>
+
+    <insert id="buyCourse">
+        insert into user_courses(user_id, course_id) values(#{userId},#{courseId})
+    </insert>
+
+    <delete id="unstarCourse">
+        delete from user_course_favorites where user_id = #{userId} and course_id = #{courseId}
+    </delete>
+
+    <select id="getCourses" resultType="com.sjqcf.pojo.Course">
+        select * from courses
+    </select>
+
+    <select id="getCoursesByName" resultType="com.sjqcf.pojo.Course">
+        select * from courses where name like '%${name}%'
+    </select>
+
+    <select id="getCoursesByUserId" resultType="java.lang.Integer">
+        select course_id from user_course_favorites where user_id = #{userId}
+    </select>
+
+    <select id="getCourseById" resultType="com.sjqcf.pojo.Course">
+        <foreach item="id" collection="ids" separator="," open="select * from courses where id in (" close=")">
+            ${id}
+        </foreach>
+    </select>
+
+    <select id="findCourseById" resultType="com.sjqcf.pojo.Course">
+        select * from courses where id = #{courseId}
+    </select>
+
+    <select id="checkFavorite" resultType="java.lang.Integer">
+        select count(*) from user_course_favorites where user_id = #{userId} and course_id = #{courseId}
+    </select>
+
+    <select id="getBoughtCoursesByUserId" resultType="java.lang.Integer">
+        select course_id from user_courses where user_id = #{userId}
+    </select>
+
+    <select id="checkBoughtCourse" resultType="java.lang.Integer">
+        select count(*) from user_courses where user_id = #{userId} and course_id = #{courseId}
+    </select>
+
+    <select id="getCourseVideo" resultType="java.lang.String">
+        select video_url from course_videos where course_id = #{courseId}
+    </select>
+</mapper>
