@@ -1,0 +1,76 @@
+#配置名字
+spring:
+  application:
+    name: myproject
+    version: 1.0.0
+  #配置数据库
+  datasource:
+    url: jdbc:mysql://localhost:3306/myproject
+#    url: jdbc:mysql://myproject_mysql:3306/myproject
+    username: root
+    password: #密码
+    driver-class-name: com.mysql.cj.jdbc.Driver #配置数据库连接池
+  servlet:
+    multipart:
+      #最大单个文件大小
+      max-file-size: 10MB
+      #最大请求大小
+      max-request-size: 100MB
+#  data:
+#    redis:
+#      host: 127.0.0.1
+#      port: 6379
+#      password: 
+#      lettuce:
+#        pool:
+#          max-active: 10
+#          max-idle: 10
+#          min-idle: 1
+#          time-between-eviction-runs: 5s
+  mail:
+    #端口
+    port: 465
+    #邮箱
+    default-encoding: utf-8
+    #服务器地址
+    host: 
+    #邮箱方邮件名
+    username: 
+    #密码
+    password: 
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            request: 5000
+            #linux 配置
+            protocol: 
+        debug: true
+
+#配置服务端口
+server:
+  port: 8080
+
+
+#阿里云配置
+aliyun:
+  oss:
+    endpoint: 
+    bucketName: 
+    region: 
+
+#配置豆包ai
+doubao:
+  ai:
+    endpoint: 
+    model: 
+
+#配置mybatis
+mybatis:
+  configuration:
+    log-impl:  #配置mybatis日志
+    map-underscore-to-camel-case: true #配置mybatis驼峰命名
+
+
