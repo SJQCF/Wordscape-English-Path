@@ -69,7 +69,7 @@ server:
 aliyun:
   oss:
     endpoint: https://oss-cn-beijing.aliyuncs.com
-    bucketName: sjqcf-web-project01
+    bucketName: 
     region: cn-beijing
 
 # 统一 AI 接入层配置
@@ -95,7 +95,7 @@ app:
       deepseek:
         display-name: DeepSeek
         base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
-        api-key: ${DEEPSEEK_API_KEY:}
+        api-key: ${DEEPSEEK_API_KEY:not-configured}
         model: ${DEEPSEEK_MODEL:deepseek-flash}
         temperature: 0.3
         capabilities: [chat, tools]
