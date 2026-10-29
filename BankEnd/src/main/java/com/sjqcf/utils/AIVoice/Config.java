@@ -6,9 +6,9 @@ public class Config {
     public static final String API_RESOURCE_ID = "volc.speech.dialog";
 
     // 用户需要配置的参数
-    public static String API_APP_ID = "4397878811";
-    public static String API_ACCESS_KEY = "NepQmweXDhfkPjHMr8DhAZHa-IJx9hVk";
-    public static String API_APP_KEY = "PlgvMymc7f3tQnJ6";
+    public static String API_APP_ID = System.getenv().getOrDefault("VOLC_APP_ID", "");
+    public static String API_ACCESS_KEY = System.getenv().getOrDefault("VOLC_ACCESS_KEY", "");
+    public static String API_APP_KEY = System.getenv().getOrDefault("VOLC_APP_KEY", "");
 
     // 音频参数配置
     public static final int INPUT_SAMPLE_RATE = 16000;

@@ -26,6 +26,6 @@ public class User {
         //截取邮箱前4位
         String suffix = email.substring(0, 4);
         this.username = "nick" + suffix;
-        this.password = "123456";
+        this.password = "";
     }
 }

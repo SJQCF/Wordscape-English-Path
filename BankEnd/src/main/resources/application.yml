@@ -18,8 +18,8 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/myproject
 #    url: jdbc:mysql://myproject_mysql:3306/myproject
-    username: root
-    password: 8823431111
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver #配置数据库连接池
   servlet:
     multipart:
@@ -31,7 +31,7 @@ spring:
 #    redis:
 #      host: 127.0.0.1
 #      port: 6379
-#      password: 8823431111
+#      password: ${REDIS_PASSWORD:}
 #      lettuce:
 #        pool:
 #          max-active: 10
@@ -46,9 +46,9 @@ spring:
     #服务器地址
     host: smtp.163.com
     #邮箱方邮件名
-    username: 19381027768@163.com
+    username: ${MAIL_USERNAME:}
     #密码
-    password: SB5SDrBSixDgmz4H
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -95,7 +95,7 @@ app:
       deepseek:
         display-name: DeepSeek
         base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
-        api-key: ${DEEPSEEK_API_KEY:sk-afe22d46d6d5427fa0221e969b625b25}
+        api-key: ${DEEPSEEK_API_KEY:}
         model: ${DEEPSEEK_MODEL:deepseek-flash}
         temperature: 0.3
         capabilities: [chat, tools]

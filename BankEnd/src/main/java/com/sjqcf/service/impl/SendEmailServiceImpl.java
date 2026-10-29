@@ -5,6 +5,7 @@ import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -15,6 +16,9 @@ public class SendEmailServiceImpl implements SendEmailService {
 
     @Autowired
     JavaMailSender mailSender;
+
+    @Value("${spring.mail.username:}")
+    private String fromAddress;
 
     @Override
     //ToEmail 接收验证码的邮箱
@@ -28,7 +32,9 @@ public class SendEmailServiceImpl implements SendEmailService {
             public void prepare(MimeMessage mimeMessage) throws Exception {
                 mimeMessage.setRecipient(Message.RecipientType.TO,
                         new InternetAddress(ToEmail));
-                mimeMessage.setFrom(new InternetAddress("19381027768@163.com"));
+                if (fromAddress != null && !fromAddress.isBlank()) {
+                    mimeMessage.setFrom(new InternetAddress(fromAddress));
+                }
                 mimeMessage.setText("您的验证码为：" + code + "，5分钟内有效");
             }
         };
