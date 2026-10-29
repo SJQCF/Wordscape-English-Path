@@ -1,0 +1,147 @@
+#配置名字
+spring:
+  application:
+    name: myproject
+    version: 1.0.0
+  ai:
+    # 关闭 Spring AI 全部模型自动装配：ChatClient 统一由 ChatClientRegistry 按 app.ai.providers 构建，
+    # 不关的话其余自动配置会因为缺少 spring.ai.openai.api-key 在启动时报错。
+    model:
+      chat: none
+      embedding: none
+      image: none
+      moderation: none
+      audio:
+        speech: none
+        transcription: none
+  #配置数据库
+  datasource:
+    url: jdbc:mysql://localhost:3306/myproject
+#    url: jdbc:mysql://myproject_mysql:3306/myproject
+    username: root
+    password: 8823431111
+    driver-class-name: com.mysql.cj.jdbc.Driver #配置数据库连接池
+  servlet:
+    multipart:
+      #最大单个文件大小
+      max-file-size: 10MB
+      #最大请求大小
+      max-request-size: 100MB
+#  data:
+#    redis:
+#      host: 127.0.0.1
+#      port: 6379
+#      password: 8823431111
+#      lettuce:
+#        pool:
+#          max-active: 10
+#          max-idle: 10
+#          min-idle: 1
+#          time-between-eviction-runs: 5s
+  mail:
+    #端口
+    port: 465
+    #邮箱
+    default-encoding: utf-8
+    #服务器地址
+    host: smtp.163.com
+    #邮箱方邮件名
+    username: 19381027768@163.com
+    #密码
+    password: SB5SDrBSixDgmz4H
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            request: 5000
+            #linux 配置
+            protocol: TLSv1.2
+        debug: true
+
+#配置服务端口
+server:
+  port: 8080
+
+
+#阿里云配置
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    bucketName: sjqcf-web-project01
+    region: cn-beijing
+
+# 统一 AI 接入层配置
+app:
+  ai:
+    # 用户未指定 providerId 时使用的默认 AI
+    default-provider: deepseek
+    # 识图/识题固定使用的 AI，不对用户开放切换
+    vision-provider: ark
+    providers:
+      ark:
+        display-name: 豆包（火山方舟）
+        base-url: ${ARK_BASE_URL:https://ark.cn-beijing.volces.com/api/v3}
+        api-key: ${ARK_API_KEY:not-configured}
+        model: ${ARK_TEXT_MODEL:doubao-seed-1-8-251228}
+        vision-model: ${ARK_VISION_MODEL:doubao-seed-1-6-vision-250815}
+        temperature: 0.3
+        capabilities: [chat, tools]
+        # 厂商特性透传示例：方舟深度思考开关
+        # extra-body:
+        #   thinking:
+        #     type: disabled
+      deepseek:
+        display-name: DeepSeek
+        base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+        api-key: ${DEEPSEEK_API_KEY:sk-afe22d46d6d5427fa0221e969b625b25}
+        model: ${DEEPSEEK_MODEL:deepseek-flash}
+        temperature: 0.3
+        capabilities: [chat, tools]
+        # 深度思考按次开关，由请求里的 deepThinking 控制；null 时用上面的默认 model。
+        # 注意：这里必须填端点上真实存在的“模型 ID”，不能填展示名。
+        # 可用 ID 只有两个：deepseek-flash（展示名 DeepSeek-V4.1-Flash）
+        # 和 deepseek-v4-pro（展示名 DeepSeek-V4-Pro）。
+        # 写 deepseek-v4.1-flash 会报 400：supported API model names are deepseek-flash, deepseek-v4-pro。
+        # deepseek-chat / deepseek-reasoner 是旧别名，实测都会被路由到 deepseek-flash。
+        thinking:
+          enabled-model: ${DEEPSEEK_THINKING_MODEL:deepseek-v4-pro}
+          disabled-model: ${DEEPSEEK_MODEL:deepseek-flash}
+          # 如果你的接入点是用请求体字段控制思考，改用下面这种写法（模型名和 body 字段可同时配）：
+          # enabled-body:
+          #   thinking:
+          #     type: enabled
+          # disabled-body:
+          #   thinking:
+          #     type: disabled
+    # AI Agent 配置
+    agent:
+      # 单次最多交给模型的消息条数，包含摘要消息。
+      memory-size: 20
+      # 未摘要消息达到该条数后生成滚动摘要。
+      summary-trigger-messages: 40
+      # 摘要后保留最近若干条原文消息。
+      summary-keep-messages: 10
+      # 单次摘要最多处理的消息数和摘要最大字符数。
+      summary-batch-size: 100
+      max-summary-chars: 6000
+  rag:
+    chunk:
+      chunk-size: 500
+      min-chunk-size-chars: 120
+      min-chunk-length-to-embed: 20
+      max-num-chunks: 10000
+      keep-separator: true
+      system-prompt: |
+        你是英语学习辅助系统中的学习规划 Agent。
+        你可以调用工具查询词库、课程、听力和图书资源。需要事实数据时必须先调用工具，不要编造。
+        回答要结合用户当前水平和目标，给出简洁、可执行的学习步骤；默认使用中文解释，英文内容附中文翻译。
+        如果工具没有返回结果，要明确说明，并给出合理的替代学习建议。
+
+#配置mybatis
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #配置mybatis日志
+    map-underscore-to-camel-case: true #配置mybatis驼峰命名
+
